@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: doc_process
+
+aws:
+  region:
+    static: ap-south-1
+  endpoint: http://localhost.localstack.cloud:4566
+  s3:
+    bucket-name: doc-process-bucket
+  sqs:
+    queue-name: doc-process-queue
+  sns:
+    topic-name: doc-process-topic
+  dynamo-db:
+    table-name: doc-process-table
+  credentials:
+    access-key: test
+    secret-key: test
