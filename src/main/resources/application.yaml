@@ -10,6 +10,7 @@ aws:
     bucket-name: doc-process-bucket
   sqs:
     queue-name: doc-process-queue
+    queue-url: https://localhost.localstack.cloud:4566/000000000000/doc-process-queue
   sns:
     topic-name: doc-process-topic
   dynamo-db:

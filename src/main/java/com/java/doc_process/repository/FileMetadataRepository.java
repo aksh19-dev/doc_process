@@ -14,7 +14,7 @@ public class FileMetadataRepository {
 
 
     public FileMetadataRepository(DynamoDbEnhancedClient enhancedClient) {
-        this.table = enhancedClient.table("FileMetadata", TableSchema.fromBean(FileMetadata.class));
+        this.table = enhancedClient.table("doc-process-table", TableSchema.fromBean(FileMetadata.class));
     }
     public void save(FileMetadata fileMetadata) {
         table.putItem(fileMetadata);

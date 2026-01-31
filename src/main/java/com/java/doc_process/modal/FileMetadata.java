@@ -1,12 +1,12 @@
 package com.java.doc_process.modal;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
-@Setter
-@Getter
+@Data
 @DynamoDbBean
 public class FileMetadata {
 
