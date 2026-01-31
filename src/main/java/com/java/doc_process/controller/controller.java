@@ -2,6 +2,9 @@ package com.java.doc_process.controller;
 
 import com.java.doc_process.modal.FileMetadata;
 import com.java.doc_process.repository.FileMetadataRepository;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,9 +18,9 @@ public class controller {
     }
 
     @PostMapping("/save-metadata")
-    public FileMetadata createFile(@RequestBody FileMetadata fileMetadata){
+    public ResponseEntity createFile(@RequestBody FileMetadata fileMetadata){
         repository.save(fileMetadata);
-        return fileMetadata;
+        return ResponseEntity.status(HttpStatus.CREATED).body("File metadata saved successfully");
     }
 
     @GetMapping("/{id}")

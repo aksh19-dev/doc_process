@@ -13,6 +13,8 @@ public class FileMetadata {
     private String fileId;
 
     private String fileName;
+    private String inputS3Key;
+    private String outputS3Key;
     private Long size;
     private String uploadedAt;
     private String processedAt;
