@@ -2,6 +2,7 @@ package com.java.doc_process.controller;
 
 import com.java.doc_process.service.S3Service;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,5 +41,11 @@ public class S3Controller {
         return ResponseEntity.ok("File uploaded successfully. File Name: " + key).getBody();
     }
 
-
+    @GetMapping(value = "/getMetadata", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getMetadata(@RequestParam("bucket") String bucketName,
+                                              @RequestParam("key") String key) {
+        String metadata = s3Service.getFileMetadata(bucketName, key);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON).body(metadata);
+    }
 }
