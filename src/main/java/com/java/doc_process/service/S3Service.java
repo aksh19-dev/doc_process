@@ -22,38 +22,6 @@ public class S3Service {
         this.dynamoDBService = dynamoDBService;
     }
 
-    public String createBucket(String bucketName) {
-        try {
-            log.info("Checking if bucket exists: {}", bucketName);
-            s3Client.headBucket(HeadBucketRequest.builder()
-                    .bucket(bucketName)
-                    .build());
-            log.info("Bucket already exists: {}", bucketName);
-            return "Bucket already exists: " + bucketName;
-        } catch (S3Exception e) {
-            log.info("Bucket Not Found: {}", e.awsErrorDetails().errorMessage() + " (code=" + e.statusCode() + ")");
-            if (e.statusCode() == 404) {
-                log.info("Creating bucket: {}", bucketName);
-                s3Client.createBucket(CreateBucketRequest.builder()
-                        .bucket(bucketName)
-                        .createBucketConfiguration(CreateBucketConfiguration.builder()
-                                .locationConstraint(BucketLocationConstraint.AP_SOUTH_1)
-                                        .build()
-                        ).build());
-                return "Bucket created Successfully: " + bucketName;
-            } else if (e.statusCode() == 403) {
-                log.warn("Access denied when checking/creating bucket: {}", bucketName);
-                throw e;
-            } else {
-                log.error("Error checking/creating bucket: {}", e.awsErrorDetails().errorMessage());
-                throw e;
-            }
-        } catch (SdkClientException e) {
-            log.info("Client error while checking/creating bucket: {}", e.getMessage());
-            throw e;
-        }
-    }
-
     public void upload(String bucketName, String key, MultipartFile file) throws IOException {
         log.info("Uploading file started: {} to bucket: {}", key, bucketName);
         try {
@@ -88,31 +56,31 @@ public class S3Service {
         }
     }
 
-    public String getFileMetadata(String bucketName, String key) {
-        log.info("Fetching metadata for file: {} in bucket: {}", key, bucketName);
-        try {
-            HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(key)
-                    .build();
-            HeadObjectResponse headObjectResponse = s3Client.headObject(headObjectRequest);
-            StringBuilder metadataInfo = new StringBuilder();
-            metadataInfo.append("File Metadata for ").append(key).append(" in bucket ").append(bucketName).append(":\n");
-            metadataInfo.append("Content Type: ").append(headObjectResponse.contentType()).append("\n");
-            metadataInfo.append("Content Length: ").append(headObjectResponse.contentLength()).append("\n");
-            metadataInfo.append("ETag: ").append(headObjectResponse.eTag()).append("\n");
-            metadataInfo.append("Last Modified: ").append(headObjectResponse.lastModified()).append("\n");
-            log.info("Metadata fetched successfully for file: {} in bucket: {}", key, bucketName);
-            return metadataInfo.toString();
-        } catch (NoSuchKeyException e) {
-            log.error("File not found: {} in bucket: {}", key, bucketName);
-            return "File not found: " + key + " in bucket: " + bucketName;
-        } catch (S3Exception e) {
-            log.error("S3 error while fetching metadata for file: {} in bucket: {}: {}", key, bucketName, e.awsErrorDetails().errorMessage());
-            throw e;
-        } catch (SdkClientException e) {
-            log.error("Client error while fetching metadata for file: {} in bucket: {}: {}", key, bucketName, e.getMessage());
-            throw e;
-        }
-    }
+//    public String getFileMetadata(String bucketName, String key) {
+//        log.info("Fetching metadata for file: {} in bucket: {}", key, bucketName);
+//        try {
+//            HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
+//                    .bucket(bucketName)
+//                    .key(key)
+//                    .build();
+//            HeadObjectResponse headObjectResponse = s3Client.headObject(headObjectRequest);
+//            StringBuilder metadataInfo = new StringBuilder();
+//            metadataInfo.append("File Metadata for ").append(key).append(" in bucket ").append(bucketName).append(":\n");
+//            metadataInfo.append("Content Type: ").append(headObjectResponse.contentType()).append("\n");
+//            metadataInfo.append("Content Length: ").append(headObjectResponse.contentLength()).append("\n");
+//            metadataInfo.append("ETag: ").append(headObjectResponse.eTag()).append("\n");
+//            metadataInfo.append("Last Modified: ").append(headObjectResponse.lastModified()).append("\n");
+//            log.info("Metadata fetched successfully for file: {} in bucket: {}", key, bucketName);
+//            return metadataInfo.toString();
+//        } catch (NoSuchKeyException e) {
+//            log.error("File not found: {} in bucket: {}", key, bucketName);
+//            return "File not found: " + key + " in bucket: " + bucketName;
+//        } catch (S3Exception e) {
+//            log.error("S3 error while fetching metadata for file: {} in bucket: {}: {}", key, bucketName, e.awsErrorDetails().errorMessage());
+//            throw e;
+//        } catch (SdkClientException e) {
+//            log.error("Client error while fetching metadata for file: {} in bucket: {}: {}", key, bucketName, e.getMessage());
+//            throw e;
+//        }
+//    }
 }
