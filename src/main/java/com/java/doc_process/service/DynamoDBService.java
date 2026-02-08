@@ -1,16 +1,16 @@
 package com.java.doc_process.service;
 
 
-import jakarta.annotation.PostConstruct;
-import com.java.doc_process.modal.FileMetadata;
-import com.java.doc_process.repository.FileMetadataRepository;
-import lombok.extern.slf4j.Slf4j;
+import java.time.Instant;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-import software.amazon.awssdk.services.dynamodb.model.*;
 
-import java.time.Instant;
+import com.java.doc_process.modal.FileMetadata;
+import com.java.doc_process.repository.FileMetadataRepository;
+
+import lombok.extern.slf4j.Slf4j;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 @Slf4j
 @Service
