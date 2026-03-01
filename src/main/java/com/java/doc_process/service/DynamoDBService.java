@@ -28,19 +28,15 @@ public class DynamoDBService {
     }
 
     public void saveFileMetadata(String bucketName, String key, long size,String contentType,String eTag) {
-        try {
-            FileMetadata metadata = new FileMetadata();
-            metadata.setFileId(key);
-            metadata.setFileName(key);
-            metadata.setInputS3Key(key);
-            metadata.setSize(size);
-            metadata.setStatus("Pending");
-            metadata.setUploadedAt(Instant.now().toString());
-            repository.save(metadata);
-            log.info("File metadata saved in DynamoDB: {}", tableName);
-        } catch (Exception e) {
-            log.error("Exception occurred while posting metadata to DB " + e.getMessage());
-        }
+        FileMetadata metadata = new FileMetadata();
+        metadata.setFileId(key);
+        metadata.setFileName(key);
+        metadata.setInputS3Key(key);
+        metadata.setSize(size);
+        metadata.setStatus("Pending");
+        metadata.setUploadedAt(Instant.now().toString());
+        repository.save(metadata);
+        log.info("File metadata saved in DynamoDB: {}", tableName);
     }
 
     public void updateService(String fileId, String status, String outputKey){
