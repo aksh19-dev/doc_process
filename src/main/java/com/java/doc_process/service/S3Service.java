@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 
@@ -36,18 +37,18 @@ public class S3Service {
             log.info("Response from S3: {}", response);
             log.info("File uploaded successfully: {} to bucket: {}. ETag: {}", key, bucketName, response.eTag());
 
-            try {
-                dynamoDBService.saveFileMetadata(bucketName,key,file.getSize(),file.getContentType(),response.eTag());
-            } catch (Exception e) {
-                log.error("Error saving file metadata to DynamoDB for file: {} in bucket: {}: {}", key, bucketName, e.getMessage());
-            }
+            dynamoDBService.saveFileMetadata(bucketName,key,file.getSize(),file.getContentType(),response.eTag());
         } catch (S3Exception e){
             log.error("S3 error during file upload: {}", e.awsErrorDetails().errorMessage());
             throw e;
         } catch (SdkClientException e){
             log.error("Client error during file upload: {}", e.getMessage());
             throw e;
+        } catch (DynamoDbException e){
+            log.error("DynamoDB error while saving metadata for file: {} in bucket: {}: {}", key, bucketName, e.awsErrorDetails().errorMessage());
+            throw e;
         }
+
     }
 
     private void validateFile(MultipartFile file){

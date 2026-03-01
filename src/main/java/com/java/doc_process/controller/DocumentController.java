@@ -34,6 +34,9 @@ public class DocumentController {
 
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadDocument(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Uploaded file cannot be empty");
+        }
         String documentId = UUID.randomUUID().toString();
         String bucketName = "document-input-bucket";
         String key = "input/" + documentId + "/orignal.txt";
