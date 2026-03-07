@@ -2,6 +2,7 @@ package com.java.doc_process.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,20 +19,15 @@ public class DocumentProcessor {
     private final DynamoDBService dynamoDBService;
     private final ObjectMapper mapper;
 
-    @Scheduled(fixedDelay = 5000)
-    public void processQueue(){
+    @SqsListener("doc-process-queue")
+    public void processQueue(String message) {
         log.info("Processing Queue");
-        List<Message> messages = sqsService.receiveMessages();
-
-        for (Message message: messages){
-            try {
-                log.info("Processing Message ID: {}", message.messageId());
-                processDocument(message.body());
-                sqsService.deleteMessage(message.receiptHandle());
-                log.info("Message deleted Successfully: {}", message.messageId());
-            } catch (Exception e) {
-                log.error("Error processing message {}: {}", message.messageId(), e.getMessage());
-            }
+        try {
+            log.info("Processing Message ID: {}", message);
+            processDocument(message);
+            log.info("Message processed Successfully: {}", message);
+        } catch (Exception e) {
+            log.error("Error processing message {}: {}", message, e.getMessage());
         }
     }
 
@@ -44,7 +40,7 @@ public class DocumentProcessor {
         dynamoDBService.updateService(fileId, "Processing", null);
 
         log.info("Processing document: {}", fileId);
-        Thread.sleep(5000);
+        Thread.sleep(10000);
 
         String outputKey = s3Key.replace("input/", "/output").replace("orignal.pdf", "result.json");
 

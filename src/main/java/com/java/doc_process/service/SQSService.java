@@ -7,25 +7,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import software.amazon.awssdk.services.sqs.SqsClient;
+import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
+import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
 @Slf4j
 @Service
 public class SQSService {
 
-    private final SqsClient sqsClient;
+    private final SqsAsyncClient sqsClient;
 
-    @Value("${aws.sqs.queue-url}")
+    @Value("${spring.cloud.aws.sqs.queue-url}")
     private String queueUrl;
 
-    @Value("${aws.sqs.queue-name}")
-    private String queueName;
-
-    public SQSService(SqsClient sqsClient) {
+    public SQSService(SqsAsyncClient sqsClient) {
         this.sqsClient = sqsClient;
     }
 
@@ -41,10 +39,12 @@ public class SQSService {
     public List<Message> receiveMessages() {
         ReceiveMessageRequest receiveRequest = ReceiveMessageRequest.builder()
                 .queueUrl(queueUrl)
-                .maxNumberOfMessages(5) // Batch size
-                .waitTimeSeconds(5)    // Long polling
+                .maxNumberOfMessages(5)
+                .waitTimeSeconds(5)
                 .build();
-        return sqsClient.receiveMessage(receiveRequest).messages();
+        return sqsClient.receiveMessage(receiveRequest)
+                .thenApply(ReceiveMessageResponse::messages)
+                .join();
     }
 
     public void deleteMessage(String receiptHandle) {
