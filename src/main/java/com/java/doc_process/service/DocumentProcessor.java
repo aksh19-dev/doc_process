@@ -5,17 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import software.amazon.awssdk.services.sqs.model.Message;
-
-import java.util.List;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class DocumentProcessor {
-    private final SQSService sqsService;
     private final DynamoDBService dynamoDBService;
     private final ObjectMapper mapper;
 
