@@ -27,16 +27,6 @@ public class SQSClient {
     @Value("${spring.cloud.aws.credentials.secret-key}")
     private String secretKey;
 
-//    @Bean
-//    public SqsClient sqsClient(){
-//        return SqsClient.builder()
-//                .endpointOverride(URI.create(endpoint))
-//                .region(Region.of(region))
-//                .credentialsProvider(
-//                        StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey,secretKey))
-//                ).build();
-//    }
-
     @Bean
     public SqsAsyncClient sqsAsyncClient(){
         return SqsAsyncClient.builder()
