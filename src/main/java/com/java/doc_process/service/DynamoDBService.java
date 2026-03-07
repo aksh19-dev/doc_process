@@ -10,20 +10,17 @@ import com.java.doc_process.modal.FileMetadata;
 import com.java.doc_process.repository.FileMetadataRepository;
 
 import lombok.extern.slf4j.Slf4j;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 @Slf4j
 @Service
 public class DynamoDBService {
 
-    private final DynamoDbClient dynamoDbClient;
     private final FileMetadataRepository repository;
 
     @Value("${aws.dynamo-db.table-name}")
     private String tableName;
 
-    public DynamoDBService(DynamoDbClient dynamoDbClient, FileMetadataRepository repository) {
-        this.dynamoDbClient = dynamoDbClient;
+    public DynamoDBService(FileMetadataRepository repository) {
         this.repository = repository;
     }
 
